@@ -1,0 +1,91 @@
+{
+    "logging": {
+        "job_id": "Demo",
+        "job_name": "Mol2Mol",
+        "logging_frequency": 0,
+        "logging_path": "output/progress.log",
+        "recipient": "local",
+        "result_folder": "output/results",
+        "sender": "http://0.0.0.1"
+    },
+    "model_type": "mol2mol",
+    "parameters": {
+        "agent": "support/pubchem.prior",
+        "curriculum_strategy": {
+            "batch_size": 64,
+            "curriculum_objectives": [],
+            "distance_threshold": 100,
+            "diversity_filter": {
+                "bucket_size": 25,
+                "minscore": 0,
+                "minsimilarity": 0.4,
+                "name": "NoFilter"
+            },
+            "inception": {
+                "memory_size": 100,
+                "sample_size": 10
+            },
+            "input": [
+                "N1(C(CN2CCN(CC2)CC3=CC=C(C=C3)OC)=O)C(CC4=C1C=CC=C4)C"
+            ],
+            "learning_rate": 0.0001,
+            "learning_strategy": {
+                "name": "dap_mol2mol",
+                "parameters": {
+                    "sigma": 120
+                }
+            },
+            "max_num_iterations": 100,
+            "name": "mol2mol"
+        },
+        "curriculum_type": "automated",
+        "production_strategy": {
+            "batch_size": 128,
+            "distance_threshold": 100,
+            "diversity_filter": {
+                "bucket_size": 25,
+                "minscore": 0,
+                "minsimilarity": 0,
+                "name": "IdenticalMurckoScaffold"
+            },
+            "learning_rate": 0.0001,
+            "learning_strategy": {
+                "name": "dap_mol2mol",
+                "parameters": {
+                    "sigma": 120
+                }
+            },
+            "name": "mol2mol",
+            "number_of_steps": 1000,
+            "scoring_function": {
+                "name": "custom_product",
+                "parallel": false,
+                "parameters": [
+                    {
+                        "component_type": "predictive_property",
+                        "name": "Predictive property",
+                        "specific_parameters": {
+                            "descriptor_type": "ecfp",
+                            "model_path": "support/drd2.pkl",
+                            "radius": 3,
+                            "scikit": "classification",
+                            "size": 2048,
+                            "transformation": {
+                                "transformation_type": "no_transformation"
+                            }
+                        },
+                        "weight": 1
+                    },
+                    {
+                        "component_type": "qed_score",
+                        "name": "QED Score",
+                        "weight": 1
+                    }
+                ]
+            },
+            "sigma": 120
+        }
+    },
+    "run_type": "curriculum_learning",
+    "version": 3
+}
